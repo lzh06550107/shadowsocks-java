@@ -1,0 +1,22 @@
+language: java
+
+jdk:
+  - openjdk8
+
+sudo: false # faster builds
+
+script: mvn clean install -DskipTests=true
+
+#before_deploy:
+#  cp $TRAVIS_BUILD_DIR/build/libs/ARTIFACT_ID*.jar ARTIFACT_ID.jar
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  file: ${TRAVIS_BUILD_DIR}/**/target/*.jar
+  file_glob: true
+  api_key:
+    secure: ${GIT_HUB_TOKEN}
+  on:
+    tags: true
+    jdk: openjdk8
