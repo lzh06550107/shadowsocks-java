@@ -1,6 +1,6 @@
 # 概览
 
-该应用是基于 netty4 框架开发的支持 shadowsocks 协议的客户端和服务端。
+该应用是基于 netty4 框架开发的支持 [shadowsocks协议](https://github.com/lzh06550107/shadowsocks-java/blob/master/%E5%AE%98%E6%96%B9%E5%8D%8F%E8%AE%AE.md) 的客户端和服务端。
 
 主要支持如下加密方式：
 
@@ -14,6 +14,10 @@
 - chacha20-ietf
 - rc4-md5
 - salsa20
+
+# 下载
+
+[下载地址](https://github.com/lzh06550107/shadowsocks-java/releases)
 
 # 使用
 

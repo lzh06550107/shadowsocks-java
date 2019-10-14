@@ -10,6 +10,8 @@ script: mvn clean install -DskipTests=true
 #before_deploy:
 #  cp $TRAVIS_BUILD_DIR/build/libs/ARTIFACT_ID*.jar ARTIFACT_ID.jar
 
+if: tag IS present
+
 deploy:
   provider: releases
   skip_cleanup: true
