@@ -17,8 +17,8 @@ deploy:
   skip_cleanup: true
   #file: ${TRAVIS_BUILD_DIR}/**/target/*.jar
   file:
-    - ${TRAVIS_BUILD_DIR}/shadowsocks-client/target/*.jar
-    - ${TRAVIS_BUILD_DIR}/shadowsocks-server/target/*.jar
+    - ${TRAVIS_BUILD_DIR}/shadowsocks/shadowsocks-client/target/*.jar
+    - ${TRAVIS_BUILD_DIR}/shadowsocks/shadowsocks-server/target/*.jar
   file_glob: true
   api_key:
     secure: ${GIT_HUB_TOKEN}
