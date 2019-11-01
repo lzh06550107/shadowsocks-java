@@ -35,7 +35,6 @@ import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
-
 @ChannelHandler.Sharable
 public final class ClientConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
     private static InternalLogger logger = InternalLoggerFactory.getInstance(ClientConnectHandler.class);
@@ -84,7 +83,7 @@ public final class ClientConnectHandler extends SimpleChannelInboundHandler<Sock
                     }); // 发出远程连接，连接成功则回调channelActive
 
             // 连接到指定的 IPV4 地址和端口
-            remoteBootstrap.connect(ClientConfig.clientConfig.getServer(), ClientConfig.clientConfig.getServer_port()).addListener(new ChannelFutureListener() {
+            remoteBootstrap.connect(ClientConfig.clientConfig.getServer_host(), ClientConfig.clientConfig.getServer_port()).addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
                     if (future.isSuccess()) { // 如果是连接建立成功
