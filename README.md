@@ -1,6 +1,6 @@
 # 概览
 
-该应用是基于 netty4 框架开发的支持 [shadowsocks协议](https://github.com/lzh06550107/shadowsocks-java/blob/master/%E5%AE%98%E6%96%B9%E5%8D%8F%E8%AE%AE.md) 的客户端和服务端。
+该应用是基于 netty4 框架开发的支持 [shadowsocks协议](https://github.com/lzh06550107/shadowsocks-java/blob/master/shadowsock_protocol.md) 的客户端和服务端。
 
 主要支持如下加密方式：
 
@@ -35,16 +35,16 @@ more:
 ```
 usage: java -jar shadowsocks-client-xxx.jar -help
  -help                   usage help
- -l,--local_port <arg>   local expose port
+ -l,--listen_port <arg>   local expose port
  -m,--method <arg>       encrypt method
  -P,--port <arg>         remote port
  -p,--password <arg>     remote secret key
- -s,--server             remote ip
+ -s,--server_host             remote ip
 ```
 
 
 
-## shadowsocks-server
+## shadowsocks-server_host
 
 使用之前，请确保在linux系统安装java虚拟机，请使用包管理器安装。在centos7中，可以使用如下命令安装
 
@@ -54,25 +54,19 @@ yum install java-1.8.0-openjdk* -y
 
 usage:
 ```
-java -jar shadowsocks-server-xxx.jar -P 8080 -m aes-128-cfb -p 123456
+java -jar shadowsocks-server_host-xxx.jar -P 8080 -m aes-128-cfb -p 123456
 ```
 
 more :
 ```
-usage: java -jar shadowsocks-server-xxx.jar -help
+usage: java -jar shadowsocks-server_host-xxx.jar -help
  -bn,--boss_number <arg>          boss thread number
- -cai,--client_all_idle <arg>     client allIdle time(second)
- -cri,--client_read_idle <arg>    client readIdle time(second)
- -cwi,--client_write_idle <arg>   client writeIdle time(second)
  -d,--address                     address bind
  -help                            usage help
  -level,--log_level <arg>         log level
  -m,--method <arg>                encrypt method
  -P,--port <arg>                  port bind
  -p,--password <arg>              password of ssserver
- -rai,--remote_all_idle <arg>     remote allIdle time(second)
- -rri,--remote_read_idle <arg>    remote readIdle time(second)
- -rwi,--remote_write_idle <arg>   remote writeIdle time(second)
  -wn,--workers_number <arg>       workers thread number
  
 ```

@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>shadowsocks-server</artifactId>
+    <artifactId>shadowsocks-server_host</artifactId>
 
     <dependencies>
         <dependency>
@@ -24,11 +24,11 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>shadowsocks-server-${project.version}</finalName>
+                    <finalName>shadowsocks-server_host-${project.version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>cn.liaozhonghao.www.shadowsocks.server.SSServer</mainClass>
+                            <mainClass>cn.liaozhonghao.www.shadowsocks.server_host.SSServer</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

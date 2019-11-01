@@ -15,26 +15,28 @@
  */
 package cn.liaozhonghao.www.shadowsocks.client;
 
-import cn.liaozhonghao.www.shadowsocks.client.config.ClientConfig;
 import cn.liaozhonghao.www.shadowsocks.client.channelHandler.SocksServerHandler;
+import cn.liaozhonghao.www.shadowsocks.client.config.ClientConfig;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.socksx.SocksPortUnificationServerHandler;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 import org.apache.commons.cli.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 
 public final class SSLocal {
 
-    private static Logger logger = LoggerFactory.getLogger(SSLocal.class);
+    private static InternalLogger logger = InternalLoggerFactory.getInstance(SSLocal.class);
 
     private static Options OPTIONS = new Options();
     private static CommandLine commandLine;
@@ -77,7 +79,7 @@ public final class SSLocal {
             }
 
             // remote ip
-            ClientConfig.clientConfig.setServer(commandLine.getOptionValue("s"));
+            ClientConfig.clientConfig.setServer_host(commandLine.getOptionValue("s"));
             // remote port
             ClientConfig.clientConfig.setServer_port(Integer.parseInt(commandLine.getOptionValue("P")));
             // remote secret key
@@ -85,7 +87,7 @@ public final class SSLocal {
             // encrypt key
             ClientConfig.clientConfig.setMethod(commandLine.getOptionValue("m"));
             // method
-            ClientConfig.clientConfig.setLocal_port(Integer.parseInt(commandLine.getOptionValue("l")));
+            ClientConfig.clientConfig.setListen_port(Integer.parseInt(commandLine.getOptionValue("l")));
         }
 
     }
@@ -124,7 +126,7 @@ public final class SSLocal {
                              SocksServerHandler.INSTANCE); // 单例模式的处理器，传入前面解码的Socks5InitialRequest对象
                  }
              }); // socks服务器初始化处理器
-            int port = ClientConfig.clientConfig.getLocal_port();
+            int port = ClientConfig.clientConfig.getListen_port();
             ChannelFuture channelFuture = b.bind(port).sync();
             logger.info("shadowsocks channelHandler client [TCP] running at {}", port);
             channelFuture.channel().closeFuture().sync();
