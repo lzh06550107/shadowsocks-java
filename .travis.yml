@@ -15,10 +15,10 @@ if: tag IS present
 deploy:
   provider: releases
   skip_cleanup: true
-  file: ${TRAVIS_BUILD_DIR}/**/target/*.jar
-  #file:
-   # - ${TRAVIS_BUILD_DIR}/shadowsocks-java/shadowsocks-client/target/*.jar
-   # - ${TRAVIS_BUILD_DIR}/shadowsocks-java/shadowsocks-server/target/*.jar
+  #file: ${TRAVIS_BUILD_DIR}/**/target/*.jar
+  file:
+   - shadowsocks-client/target/*.jar
+   - shadowsocks-server/target/*.jar
   file_glob: true
   api_key:
     secure: ${GIT_HUB_TOKEN}
