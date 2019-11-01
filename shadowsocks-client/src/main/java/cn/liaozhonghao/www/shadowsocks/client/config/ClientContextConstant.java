@@ -9,9 +9,9 @@ import java.net.InetSocketAddress;
 public class ClientContextConstant {
 
     /**
-     * socks5 client cipher
+     * channelHandler client cipher
      */
-    public static AttributeKey<AbstractCipher> SOCKS5_CLIENT_CIPHER = AttributeKey.valueOf("socks5 client cipher");
+    public static AttributeKey<AbstractCipher> SOCKS5_CLIENT_CIPHER = AttributeKey.valueOf("channelHandler client cipher");
 
     /**
      * client first encoding flag

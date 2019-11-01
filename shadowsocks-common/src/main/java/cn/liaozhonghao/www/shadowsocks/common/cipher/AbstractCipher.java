@@ -1,7 +1,10 @@
 package cn.liaozhonghao.www.shadowsocks.common.cipher;
 
+import cn.liaozhonghao.www.shadowsocks.common.codec.SSCipherCodec;
 import cn.liaozhonghao.www.shadowsocks.common.util.ShadowsocksUtils;
 import io.netty.buffer.ByteBuf;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.security.SecureRandom;
 
@@ -9,6 +12,9 @@ import java.security.SecureRandom;
  * 解密/加密工具
  */
 public abstract class AbstractCipher {
+
+    private static InternalLogger logger = InternalLoggerFactory.getInstance(AbstractCipher.class);
+
     /**
      * cipher name
      */

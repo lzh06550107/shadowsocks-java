@@ -1,8 +1,8 @@
 package cn.liaozhonghao.www.shadowsocks.common.cipher;
 
 import cn.liaozhonghao.www.shadowsocks.common.cipher.stream.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -16,7 +16,7 @@ public class CipherProvider {
     /**
      * static logger
      */
-    private static Logger logger = LoggerFactory.getLogger(CipherProvider.class);
+    private static InternalLogger logger = InternalLoggerFactory.getInstance(CipherProvider.class);
 
     private static Map<String, Class<? extends AbstractCipher>> cipherMap = new HashMap<>();
 

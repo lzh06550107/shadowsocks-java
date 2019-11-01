@@ -1,8 +1,13 @@
 package cn.liaozhonghao.www.shadowsocks.common.util;
 
+import cn.liaozhonghao.www.shadowsocks.common.common.SSAddrRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.handler.codec.socks.SocksAddressType;
+import io.netty.handler.codec.socksx.v5.Socks5AddressType;
 import io.netty.util.internal.StringUtil;
 
 import java.net.InetSocketAddress;

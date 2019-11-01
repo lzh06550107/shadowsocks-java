@@ -28,7 +28,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>cn.liaozhonghao.www.shadowsocks.client.ClientStart</mainClass>
+                            <mainClass>cn.liaozhonghao.www.shadowsocks.client.SSLocal</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

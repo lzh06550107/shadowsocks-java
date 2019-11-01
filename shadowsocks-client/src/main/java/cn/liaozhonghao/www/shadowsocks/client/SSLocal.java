@@ -1,77 +1,50 @@
+/*
+ * Copyright 2012 The Netty Project
+ *
+ * The Netty Project licenses this file to you under the Apache License,
+ * version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at:
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ */
 package cn.liaozhonghao.www.shadowsocks.client;
 
-import cn.liaozhonghao.www.shadowsocks.client.channelHandler.inbound.CryptInitInHandler;
-import cn.liaozhonghao.www.shadowsocks.client.channelHandler.inbound.Socks5ServerDoorHandler;
 import cn.liaozhonghao.www.shadowsocks.client.config.ClientConfig;
+import cn.liaozhonghao.www.shadowsocks.client.channelHandler.SocksServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.handler.codec.socksx.SocksPortUnificationServerHandler;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-import java.util.concurrent.TimeUnit;
 
-/**
- * client Start
- */
-public class ClientStart{
-    /**
-     * static logger
-     */
-    private static Logger logger = LoggerFactory.getLogger(ClientStart.class);
+public final class SSLocal {
 
-    /**
-     * boosLoopGroup
-     */
-    private static EventLoopGroup bossLoopGroup = new NioEventLoopGroup(1);
-    /**
-     * worksLoopGroup
-     */
-    private static EventLoopGroup worksLoopGroup = new NioEventLoopGroup(1);
-    /**
-     * clientBootstrap
-     */
-    private static ServerBootstrap clientBootstrap = new ServerBootstrap();
+    private static Logger logger = LoggerFactory.getLogger(SSLocal.class);
+
+    private static Options OPTIONS = new Options();
+    private static CommandLine commandLine;
+    private static String HELP_STRING = null;
 
     public static void main(String[] args) throws InterruptedException {
         initCliArgs(args);
         startupTCP();
     }
 
-    public static void startupTCP() throws InterruptedException {
-        clientBootstrap.group(bossLoopGroup, worksLoopGroup)
-                .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .channel(NioServerSocketChannel.class)
-                .childHandler(new ChannelInitializer<Channel>() {
-                    @Override
-                    protected void initChannel(Channel ch) throws Exception {
-                        ch.pipeline()
-                                .addLast("idle", new IdleStateHandler(20, 20, 0, TimeUnit.MINUTES))// 心跳机制
-                                .addLast("crypt-init",new CryptInitInHandler()) // 初始化cipher对象
-                                .addLast("socks5-door", new Socks5ServerDoorHandler());
-                    }
-                });
-        int port = ClientConfig.clientConfig.getLocal_port();
-        ChannelFuture channelFuture = clientBootstrap.bind(port).sync();
-
-        //start log
-        logger.info("shadowsocks socks5 client [TCP] running at {}", port);
-        channelFuture.channel().closeFuture().sync();
-    }
-
-    private static Options OPTIONS = new Options();
-    private static CommandLine commandLine;
-    private static String HELP_STRING = null;
-    /**
-     * init args
-     *
-     * @param args args
-     */
     private static void initCliArgs(String[] args) {
         // validate args
         {
@@ -117,11 +90,6 @@ public class ClientStart{
 
     }
 
-    /**
-     * get string of help usage
-     *
-     * @return help string
-     */
     private static String getHelpString() {
         if (HELP_STRING == null) {
             HelpFormatter helpFormatter = new HelpFormatter();
@@ -135,5 +103,34 @@ public class ClientStart{
             printWriter.close();
         }
         return HELP_STRING;
+    }
+
+    public static void startupTCP() throws InterruptedException {
+        // 使用单线程来处理请求连接
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        // 使用多线程来处理读写IO
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup)
+             .channel(NioServerSocketChannel.class)
+             //.handler(new LoggingHandler(LogLevel.INFO)) // 记录连接信息
+             .childHandler(new ChannelInitializer<SocketChannel>() {
+                 @Override
+                 public void initChannel(SocketChannel ch) {
+                     ch.pipeline().addLast(
+                             new LoggingHandler(LogLevel.INFO), // IO读写日志
+                             new SocksPortUnificationServerHandler(), // socks统一服务处理器，检查协议版本并注册对应版本的初始化处理器
+                             SocksServerHandler.INSTANCE); // 单例模式的处理器，传入前面解码的Socks5InitialRequest对象
+                 }
+             }); // socks服务器初始化处理器
+            int port = ClientConfig.clientConfig.getLocal_port();
+            ChannelFuture channelFuture = b.bind(port).sync();
+            logger.info("shadowsocks channelHandler client [TCP] running at {}", port);
+            channelFuture.channel().closeFuture().sync();
+        } finally {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
     }
 }

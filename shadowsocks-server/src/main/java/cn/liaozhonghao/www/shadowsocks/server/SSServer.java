@@ -2,12 +2,13 @@ package cn.liaozhonghao.www.shadowsocks.server;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import cn.liaozhonghao.www.shadowsocks.server.chananelHandler.inbound.DecodeCipherStreamInHandler;
+import cn.liaozhonghao.www.shadowsocks.common.cipher.CipherProvider;
+import cn.liaozhonghao.www.shadowsocks.common.codec.SSCipherCodec;
+import cn.liaozhonghao.www.shadowsocks.common.codec.SSProtocolCodec;
+import cn.liaozhonghao.www.shadowsocks.common.common.SSCommon;
+import cn.liaozhonghao.www.shadowsocks.server.chananelHandler.ServerConnectHandler;
 import cn.liaozhonghao.www.shadowsocks.server.config.ServerConfig;
 import cn.liaozhonghao.www.shadowsocks.server.config.ServerContextConstant;
-import cn.liaozhonghao.www.shadowsocks.server.chananelHandler.inbound.CryptInitInHandler;
-import cn.liaozhonghao.www.shadowsocks.server.chananelHandler.inbound.TcpProxyInHandler;
-import cn.liaozhonghao.www.shadowsocks.server.chananelHandler.outbound.EncodeCipherStreamOutHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -15,25 +16,24 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.internal.logging.InternalLogger;
+import io.netty.util.internal.logging.InternalLoggerFactory;
 import org.apache.commons.cli.*;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * server start
  */
-public class ServerStart {
+public class SSServer {
     /**
      * static logger
      */
-    private static Logger logger = LoggerFactory.getLogger(ServerStart.class);
+    private static InternalLogger logger = InternalLoggerFactory.getInstance(SSServer.class);
 
     /**
      * boosLoopGroup
@@ -58,15 +58,15 @@ public class ServerStart {
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<Channel>() {
                     protected void initChannel(Channel ch) throws Exception {
+                        ch.attr(SSCommon.IS_UDP).set(false);
+
                         ch.pipeline()
-                                .addLast(new IdleStateHandler(ServerConfig.serverConfig.getCriTime(), ServerConfig.serverConfig.getCwiTime(),
-                                        ServerConfig.serverConfig.getCaiTime(), TimeUnit.SECONDS)) // 心跳
-                                .addLast(new CryptInitInHandler()) // TOOD 放到common模块中
-                                .addLast(new DecodeCipherStreamInHandler())
-                                .addLast(new TcpProxyInHandler())
-                                .addLast(new EncodeCipherStreamOutHandler());
+                                .addLast(new SSCipherCodec(CipherProvider.getByName(ServerConfig.serverConfig.getMethod(), ServerConfig.serverConfig.getPassword())))
+                                .addLast(new SSProtocolCodec(false))
+                                .addLast(ServerConnectHandler.INSTANCE);
                     }
                 });
+
         String localIp = ServerConfig.serverConfig.getLocalAddress();
         int localPort = ServerConfig.serverConfig.getLocalPort();
 

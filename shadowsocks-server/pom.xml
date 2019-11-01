@@ -28,7 +28,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>cn.liaozhonghao.www.shadowsocks.server.ServerStart</mainClass>
+                            <mainClass>cn.liaozhonghao.www.shadowsocks.server.SSServer</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
