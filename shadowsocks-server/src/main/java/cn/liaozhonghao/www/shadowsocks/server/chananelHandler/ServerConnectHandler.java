@@ -68,7 +68,7 @@ public final class ServerConnectHandler extends SimpleChannelInboundHandler<Byte
                     logger.info("client {} connction remote {} success!", ctx.channel().remoteAddress(), remote.host() + ":" + remote.port());
 
                     // 把第一次请求包剩余数据写入到中继通道
-                    future.channel().writeAndFlush(message.retain());
+                    future.channel().writeAndFlush(message);
                 } else {
                     // Close the connection if the connection attempt has failed.
                     ctx.channel().close();
