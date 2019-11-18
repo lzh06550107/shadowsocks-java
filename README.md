@@ -44,7 +44,7 @@ usage: java -jar shadowsocks-client-xxx.jar -help
 
 
 
-## shadowsocks-server_host
+## shadowsocks-server
 
 使用之前，请确保在linux系统安装java虚拟机，请使用包管理器安装。在centos7中，可以使用如下命令安装
 
@@ -54,12 +54,12 @@ yum install java-1.8.0-openjdk* -y
 
 usage:
 ```
-java -jar shadowsocks-server_host-xxx.jar -P 8080 -m aes-128-cfb -p 123456
+java -jar shadowsocks-server-xxx.jar -P 8080 -m aes-128-cfb -p 123456
 ```
 
 more :
 ```
-usage: java -jar shadowsocks-server_host-xxx.jar -help
+usage: java -jar shadowsocks-server-xxx.jar -help
  -bn,--boss_number <arg>          boss thread number
  -d,--address                     address bind
  -help                            usage help
